@@ -16,11 +16,27 @@ namespace HiJeanCleaning
                 "Enter 1 if you want to input manually or Enter 2 if you want a randomly generated number \n"+
                 "-----------------------------------------------------------------------------------------");
 
-          
+            TestChem();
         
         
         }
-       
+        static void TestChem()
+        {
+            float germNum = float.Parse(Console.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
+
+            if (germNum == 1)
+            {
+                Console.WriteLine("Enter amount of Germs you would like to sample with");
+            }
+            else
+            {
+                Random rnd = new Random();
+                float randNum = rnd.Next();
+                Console.WriteLine($"{randNum}");
+            }
+
+
+        }
     }
 
 
