@@ -1,10 +1,18 @@
-﻿using System;
+﻿//imports
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace HiJeanCleaning
 {
     class Program
     {
+        //global variables
+        //Lists
+        static readonly List<string> CHEMICALS = new List<string>() { "Formaldehyde", "Ethanol", "Hydrogen Peroxide", "Chlorine", "Peracetic Acid" };
+        static List<float> chemicalRating = new List<float>();
+        static List<int> chosenChem = new List<int>();
+
         static void Main(string[] args)
         {
             //Welcome message
@@ -24,14 +32,15 @@ namespace HiJeanCleaning
         {
             //chemical list 
             Console.WriteLine("Please choose a chemical you are wanting to test with from the list:\n" +
-              "1. Formaldehyde \n" +
-              "2. Ethanol \n" +
-              "3. Hydrogen Peroxide \n" +
-              "4. Chlorine \n" +
-              "5. Peracetic Acid \n"
+              $"1. {CHEMICALS [0]} \n" +
+              $"2. {CHEMICALS [1]} \n" +
+              $"3. {CHEMICALS[2]} \n" +
+              $"4. {CHEMICALS[3]} \n" +
+              $"5. {CHEMICALS[4]} \n"
               );
 
-            int chemChoice = Convert.ToInt32(Console.ReadLine());
+            chosenChem.Add(Convert.ToInt32(Console.ReadLine())-1);
+            float sumEff = 0;
 
             //for loop for repeating the test 5 times
             for (int i = 1; i < 6; i++)
@@ -48,16 +57,25 @@ namespace HiJeanCleaning
                 float leftGerms = float.Parse(Console.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
 
                 //eficiency rate
-                float effRate = (liveGerm - leftGerms) / 30;
+                float effRate = (liveGerm - leftGerms) / 20;
+
+                sumEff += effRate;
 
                 Console.WriteLine(
-                    $"The efficency rate of chemcical {chemChoice} is {effRate} \n" +
+                    $"The efficency rate of {CHEMICALS[chosenChem[chosenChem.Count -1]]} is: {effRate} \n" +
                     "--------------------------------------------------------------------- \n");
 
             }
-        
+            //Final Efficiency Rating of all 5 tests
+            float finalEffRate = (float)Math.Round(sumEff/ 5, 2);
+            chemicalRating.Add(finalEffRate);
 
-        
+            Console.WriteLine(
+                $"The average efficiency rate of the 5 tests is: {finalEffRate}\n"+
+                "--------------------------------------------------------------");
+
+
+
         }
     
     }
