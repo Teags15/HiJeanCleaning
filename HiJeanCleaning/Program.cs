@@ -10,7 +10,7 @@ namespace HiJeanCleaning
         //global variables
 
         static readonly List<string> CHEMICALS = new List<string>() { "Formaldehyde", "Ethanol", "Hydrogen Peroxide", "Chlorine", "Peracetic Acid" };
-        static List<float> chemicalRating = new List<float>();
+        static List<float> chemRating = new List<float>();
         static List<int> chosenChem = new List<int>();
 
 
@@ -20,7 +20,7 @@ namespace HiJeanCleaning
         {
             int menuPick;
             bool flag = true;
-            
+
             //Welcome message
             Console.WriteLine(
                 "Welcome to Hi-Jean Cleaning!\n" +
@@ -34,9 +34,9 @@ namespace HiJeanCleaning
 
                 menuPick = CheckInt("Menu: \n" +
                     "1. Continue\n" +
-                    "2. Stop", 1, 2 );
+                    "2. Stop", 1, 2);
                 Console.WriteLine("----------------");
-                
+
                 if (menuPick == 1)
                 {
                     TestChem();
@@ -53,34 +53,103 @@ namespace HiJeanCleaning
 
             }
 
-            //Additional methods
+            //sorting chemRating and CHEMICALS lists in order
 
-            //Check to see chemical has not been tested before
-            static int CheckChemical()
+            for (int leftPointer = 0; leftPointer < chemRating.Count - 1; leftPointer++)
             {
-                while (true)
+                for (int rightPointer = leftPointer + 1; rightPointer < chemRating.Count; rightPointer++)
                 {
-                    //chemical list 
-                    Console.WriteLine("\nPlease choose a chemical you are wanting to test with from the list:\n" +
-                    $"1. {CHEMICALS[0]} \n" +
-                    $"2. {CHEMICALS[1]} \n" +
-                    $"3. {CHEMICALS[2]} \n" +
-                    $"4. {CHEMICALS[3]} \n" +
-                    $"5. {CHEMICALS[4]} \n"
-                    );
-
-                    int chemChoice = Convert.ToInt32(Console.ReadLine());
-                    if (chosenChem.Contains(chemChoice))
+                    //Swopping logic
+                    if (chemRating[leftPointer] < chemRating[rightPointer])
                     {
-                        Console.WriteLine("Error: You have already picked this chemical. Please pick another chemical");
+                        float tempRATE = chemRating[leftPointer];
+                        chemRating[leftPointer] = chemRating[rightPointer];
+                        chemRating[rightPointer] = tempRATE;
+                        int tempCHEM = chosenChem[leftPointer];
+                        chosenChem[leftPointer] = chosenChem[rightPointer];
+                        chosenChem[rightPointer] = tempCHEM;
 
-                    }
-                    else
-                    {
-                        return chemChoice;
+
+
                     }
                 }
             }
+
+
+            //Ordered List (Desc)
+
+
+            string top3Chem = "-----Top Chemicals-----\n";
+            int numLoop;
+
+            if (chosenChem.Count >= 3)
+            {
+                numLoop = 3;
+            }
+            else
+            {
+                numLoop = chosenChem.Count;
+            }
+
+            for (int chemIndex = 0; chemIndex < numLoop; chemIndex++)
+            {
+                top3Chem += chemIndex + 1 + "." + "" + CHEMICALS[chosenChem[chemIndex]] + " " + chemRating[chemIndex] + "\n";
+
+            }
+
+            Console.WriteLine(top3Chem);
+
+
+            string worst3Chem = "-----Worst Chemicals-----\n";
+
+            int numbLoop;
+            int worstchemIndex = chosenChem.Count - 1;
+
+            if (chosenChem.Count >= 3)
+            {
+                numbLoop = 3;
+            }
+            else
+            {
+                numbLoop = chosenChem.Count;
+            }
+
+            for (int loop = chosenChem.Count - 1; loop < numbLoop; loop--)
+            {
+                worst3Chem += worstchemIndex + 1 + "." + "" + CHEMICALS[chosenChem[worstchemIndex]] + " " + chemRating[worstchemIndex] + "\n";
+
+            }
+            Console.WriteLine(worst3Chem);
+
+
+        }   
+            
+            //Additional methods
+
+            //Check to see chemical has not been tested before
+        static int CheckChemical()
+        {
+            while (true)
+            {
+                //Chemical list
+                int chemChoice = CheckInt("\nPlease choose a chemical you are wanting to test with from the list:\n" +
+                $"1. {CHEMICALS[0]} \n" +
+                $"2. {CHEMICALS[1]} \n" +
+                $"3. {CHEMICALS[2]} \n" +
+                $"4. {CHEMICALS[3]} \n" +
+                $"5. {CHEMICALS[4]} \n", 1, 5);
+                    
+                if (chosenChem.Contains(chemChoice))
+                {
+                    Console.WriteLine("Error: You have already tested this chemical. Please pick another chemical");
+
+                }
+                else
+                {
+                    return chemChoice;
+                }
+            }
+        }
 
 
             //Calculates efficiency of chemical
@@ -93,42 +162,47 @@ namespace HiJeanCleaning
                     //for loop for repeating the test 5 times
                     for (int i = 1; i < 6; i++)
                     {
-
-                        Console.WriteLine($"Enter amount of Germs you would like to sample with: Test {i}");
-                        float liveGerm = float.Parse(Console.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
-
+                        //liveGerm amount between 30-300
+                        float liveGerm = CheckInt($"Enter amount of Germs you would like to sample with: Test {i}",30,300);
+                        
+                        //Waiting Period for livegerm to die
                         Console.WriteLine(
                             "---Please wait 30 mins before entering amount of live germs left---\n" +
-                            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
-                        Console.WriteLine("Please enter the remaining number of germs in sample");
+                        Console.WriteLine("Please enter the remaining number of germs in sample\n");
 
                         float leftGerms = float.Parse(Console.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
 
-                        //eficiency rate
+                        //eficiency rate equation
                         float effRate = (liveGerm - leftGerms) / 20;
 
                         sumEff += effRate;
 
                         Console.WriteLine(
-                            $"The efficency rate of {CHEMICALS[chosenChem[chosenChem.Count - 1]]} is: {effRate} \n" +
+                            $"The efficency rate of {CHEMICALS[chosenChem[chosenChem.Count - 1]-1]} is: {effRate} \n" +
                             "-----------------------------------------------------------------\n");
 
                     }
+                    
                     //Final Efficiency Rating of all 5 tests
                     float finalEffRate = (float)Math.Round(sumEff / 5, 2);
-                    chemicalRating.Add(finalEffRate);
+                    
+                    chemRating.Add(finalEffRate);
 
                     Console.WriteLine(
-                    $"The average efficiency rate of the 5 tests of {CHEMICALS[chosenChem[chosenChem.Count - 1]]} is: {finalEffRate}\n" +
+                    $"The average efficiency rate of the 5 tests of {CHEMICALS[chosenChem[chosenChem.Count - 1]-1]} is: {finalEffRate}\n" +
                     "---------------------------------------------------------------------\n");
-                }
-
-
             }
 
+
+        
+            
+            //Error message for player menu
             static int CheckInt(string question, int min, int max)
             {
+                string ERROR_MSG = $"Error: Enter a valid number between {min} and {max}\n";
+                
                 while (true)
                 {
                     try
@@ -142,27 +216,18 @@ namespace HiJeanCleaning
                         }
                         else
                         {
-                            Console.WriteLine($"ERROR: Please enter a number between {min} and {max}\n");
+                            Console.WriteLine(ERROR_MSG);
                         }
                     }
                     catch
                     {
-                        Console.WriteLine($"ERROR: Please enter a number between {min} and {max}\n");
+                        Console.WriteLine(ERROR_MSG);
                     }
 
 
                 }
 
-
-
-
-
-
-
             }
-
-
-
         
     }
 }   
