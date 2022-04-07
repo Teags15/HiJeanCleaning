@@ -78,8 +78,9 @@ namespace HiJeanCleaning
 
             //Ordered List (Desc)
 
-
-            string top3Chem = "-----Top Chemicals-----\n";
+            //Most effective chemicals
+            
+            string topChem = "-----Top Chemicals-----\n";
             int numLoop;
 
             if (chosenChem.Count >= 3)
@@ -93,14 +94,14 @@ namespace HiJeanCleaning
 
             for (int chemIndex = 0; chemIndex < numLoop; chemIndex++)
             {
-                top3Chem += chemIndex + 1 + "." + "" + CHEMICALS[chosenChem[chemIndex]] + " " + chemRating[chemIndex] + "\n";
+                topChem += chemIndex + 1 + "." + "" + CHEMICALS[chosenChem[chemIndex]] + " " + chemRating[chemIndex] + "\n";
 
             }
 
-            Console.WriteLine(top3Chem);
+            Console.WriteLine(topChem);
 
-
-            string worst3Chem = "-----Worst Chemicals-----\n";
+            //least effective chemicals
+            string worstChem = "-----Worst Chemicals-----\n";
 
             int numbLoop;
             int worstchemIndex = chosenChem.Count - 1;
@@ -114,12 +115,12 @@ namespace HiJeanCleaning
                 numbLoop = chosenChem.Count;
             }
 
-            for (int loop = chosenChem.Count - 1; loop < numbLoop; loop--)
+            for (int loop = 0; loop < numbLoop; loop--)
             {
-                worst3Chem += worstchemIndex + 1 + "." + "" + CHEMICALS[chosenChem[worstchemIndex]] + " " + chemRating[worstchemIndex] + "\n";
-
+                worstChem += worstchemIndex + 1 + "." + "" + CHEMICALS[chosenChem[worstchemIndex]] + " " + chemRating[worstchemIndex] + "\n";
+                worstchemIndex--;
             }
-            Console.WriteLine(worst3Chem);
+            Console.WriteLine(worstChem);
 
 
         }   
@@ -153,61 +154,59 @@ namespace HiJeanCleaning
 
 
             //Calculates efficiency of chemical
-            static void TestChem()
+        static void TestChem()
+        {
+            chosenChem.Add(CheckChemical());
+
+            float sumEff = 0;
+
+            //for loop for repeating the test 5 times
+            for (int i = 1; i < 6; i++)
             {
-                chosenChem.Add(CheckChemical());
-
-                    float sumEff = 0;
-
-                    //for loop for repeating the test 5 times
-                    for (int i = 1; i < 6; i++)
-                    {
-                        //liveGerm amount between 30-300
-                        float liveGerm = CheckInt($"Enter amount of Germs you would like to sample with: Test {i}",30,300);
+                //liveGerm amount between 30-300
+                float liveGerm = CheckInt($"Enter amount of Germs you would like to sample with: Test {i}",30,300);
                         
-                        //Waiting Period for livegerm to die
-                        Console.WriteLine(
-                            "---Please wait 30 mins before entering amount of live germs left---\n" +
-                            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+                //Waiting Period for livegerm to die
+                Console.WriteLine(
+                     "---Please wait 30 mins before entering amount of live germs left---\n" +
+                     "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
-                        Console.WriteLine("Please enter the remaining number of germs in sample\n");
+               float leftGerms = CheckInt($"\nPLease entering the remaining number of germs",0,300);
 
-                        float leftGerms = float.Parse(Console.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
+                //eficiency rate equation
+                float effRate = (liveGerm - leftGerms) / 20;
 
-                        //eficiency rate equation
-                        float effRate = (liveGerm - leftGerms) / 20;
+                sumEff += effRate;
 
-                        sumEff += effRate;
+                Console.WriteLine(
+                    $"The efficency rate of {CHEMICALS[chosenChem[chosenChem.Count - 1]-1]} is: {effRate} \n" +
+                    "-----------------------------------------------------------------\n");
 
-                        Console.WriteLine(
-                            $"The efficency rate of {CHEMICALS[chosenChem[chosenChem.Count - 1]-1]} is: {effRate} \n" +
-                            "-----------------------------------------------------------------\n");
-
-                    }
-                    
-                    //Final Efficiency Rating of all 5 tests
-                    float finalEffRate = (float)Math.Round(sumEff / 5, 2);
-                    
-                    chemRating.Add(finalEffRate);
-
-                    Console.WriteLine(
-                    $"The average efficiency rate of the 5 tests of {CHEMICALS[chosenChem[chosenChem.Count - 1]-1]} is: {finalEffRate}\n" +
-                    "---------------------------------------------------------------------\n");
             }
+                    
+                //Final Efficiency Rating of all 5 tests
+                float finalEffRate = (float)Math.Round(sumEff / 5, 2);
+                    
+                chemRating.Add(finalEffRate);
+
+                Console.WriteLine(
+                $"The average efficiency rate of the 5 tests of {CHEMICALS[chosenChem[chosenChem.Count - 1]-1]} is: {finalEffRate}\n" +
+                "---------------------------------------------------------------------\n");
+        }
 
 
         
             
-            //Error message for player menu
-            static int CheckInt(string question, int min, int max)
-            {
-                string ERROR_MSG = $"Error: Enter a valid number between {min} and {max}\n";
+        //Error message for player menu
+        static int CheckInt(string question, int min, int max)
+        {
+            string ERROR_MSG = $"Error: Enter a valid number between {min} and {max}\n";
                 
-                while (true)
+            while (true)
+            {
+                try
                 {
-                    try
-                    {
-                        Console.WriteLine(question);
+                    Console.WriteLine(question);
                         int user_choice = Convert.ToInt32(Console.ReadLine());
 
                         if (user_choice >= min && user_choice <= max)
